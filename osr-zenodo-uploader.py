@@ -83,6 +83,7 @@ class OSRDataCompiler(object):
     def run(self):
         self._create_dir()
         self._extract_meta_data_from_html()
+        self._write_meta_data_to_json_file()
         if not self._skip_file_download:
             self._download_audio_files()
             self._get_shownotes()
@@ -97,7 +98,7 @@ class OSRDataCompiler(object):
     def _extract_meta_data_from_html(self):
         response = requests.get(self._episode_url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        self._meta_data = {"title": soup.title.string}
+        self._meta_data["title"] = soup.title.string
         for meta_tag in soup.find_all("meta"):
             property = meta_tag.get("property")
             content = meta_tag.get("content")
@@ -111,6 +112,10 @@ class OSRDataCompiler(object):
             elif property == "og:audio":
                 self._audio_file_urls.append(content)
 
+    def _write_meta_data_to_json_file(self):
+        with open("{}/meta.json".format(self._output_folder), "w") as json_fh:
+            json.dump(self._meta_data, json_fh, sort_keys=True, indent=4)
+                
     def _download_audio_files(self):
         for audio_file_url in self._audio_file_urls:
             sys.stdout.write("Downloading {}\n".format(audio_file_url))
