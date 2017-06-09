@@ -34,7 +34,7 @@ def main():
     
     compile_data_parser = subparsers.add_parser(
         "compile_data", help="Compile the data")
-    compile_data_parser.add_argument("--episode-url", "-e", required=True)
+    compile_data_parser.add_argument("--episode_url", "-u", required=True)
     compile_data_parser.add_argument(
         "--output_folder", "-o", required=True)
     compile_data_parser.set_defaults(runner_class=OSRDataCompiler)
