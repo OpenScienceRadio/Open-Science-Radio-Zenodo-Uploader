@@ -11,7 +11,7 @@ coded.
 Step 1 - Download the file and compile the meta data.
 
 ```
-./osr-zenodo-uploader.py compile_data -u http://www.openscienceradio.de/2015/01/29/osr028-unseminars-mit-aidan-budd/ -o OSR028
+$ ./osr-zenodo-uploader.py compile_data -u http://www.openscienceradio.de/2015/01/29/osr028-unseminars-mit-aidan-budd/ -o OSR028
 ```
 
 This should lead to the following folde/file structure:
@@ -29,7 +29,13 @@ You can edit the meta data file manually if needed.
 Step 2 - Zenodo submission:
 
 ```
-./osr-zenodo-uploader.py upload -i OSR028
+$ ./osr-zenodo-uploader.py upload -i OSR028
+```
+
+### Dependecies
+
+```
+$ pip install beautifulsoup4 requests wget
 ```
 
 ### Links
