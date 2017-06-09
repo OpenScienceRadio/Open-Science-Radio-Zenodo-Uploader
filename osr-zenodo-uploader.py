@@ -46,6 +46,8 @@ def main():
     compile_data_parser.add_argument(
         "--shownote_repo", "-s",
         default="matthiasfromm/Open-Science-Radio")
+    compile_data_parser.add_argument("--skip_file_download", "-d",
+                                     default="False", action="store_true")
     compile_data_parser.set_defaults(runner_class=OSRDataCompiler)
     
     upload_parser = subparsers.add_parser("upload", help="Upload data")
@@ -66,14 +68,24 @@ class OSRDataCompiler(object):
         self._episode_url = args.episode_url
         self._output_folder = args.output_folder
         self._shownote_repo = args.shownote_repo
-        self._meta_data = {}
+        self._skip_file_download = args.skip_file_download
+        self._meta_data = {
+            "creators": [{"name": "Fromm, Matthias"},
+                         {"name": "Förstner, Konrad U.",
+                          "orcid": "0000-0002-1481-2996",
+                          "gnd": "13731518X"}],
+            "upload_type": "video",
+            "access_right": "open",
+            "license": "cc-by"
+        }
         self._audio_file_urls = []
 
     def run(self):
         self._create_dir()
         self._extract_meta_data_from_html()
-        self._download_audio_files()
-        self._get_shownotes()
+        if not self._skip_file_download:
+            self._download_audio_files()
+            self._get_shownotes()
         
     def _create_dir(self):
         try:
