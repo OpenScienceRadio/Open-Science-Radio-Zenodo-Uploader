@@ -117,9 +117,14 @@ class OSRDataCompiler(object):
             json.dump(self._meta_data, json_fh, sort_keys=True, indent=4)
                 
     def _download_audio_files(self):
-        for audio_file_url in set(self._audio_file_urls):
+        downloaded_files = set()
+        for audio_file_url in self._audio_file_urls:
+            audio_file = audio_file_url.split("/")[-1]
+            if audio_file in downloaded_files:
+                continue
             sys.stdout.write("Downloading {}\n".format(audio_file_url))
             wget.download(audio_file_url, out=self._output_folder)
+            downloaded_files.add(audio_file)
             sys.stdout.write("\n")
 
     def _get_shownotes(self):
