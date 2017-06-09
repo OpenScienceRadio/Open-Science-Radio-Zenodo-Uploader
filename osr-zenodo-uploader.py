@@ -120,6 +120,7 @@ class OSRDataCompiler(object):
         for audio_file_url in set(self._audio_file_urls):
             sys.stdout.write("Downloading {}\n".format(audio_file_url))
             wget.download(audio_file_url, out=self._output_folder)
+            sys.stdout.write("\n")
 
     def _get_shownotes(self):
         """Downloads the shownotes file
