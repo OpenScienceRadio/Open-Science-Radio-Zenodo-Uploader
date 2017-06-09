@@ -26,6 +26,11 @@ __email__ = "konrad@foerstner.org"
 __version__ = ""
 
 import argparse
+import os
+import sys
+import requests
+from bs4 import BeautifulSoup
+import wget
 
 
 def main():
@@ -43,20 +48,55 @@ def main():
     upload_parser.add_argument("--input_folder", "-i", required=True)
     upload_parser.set_defaults(runner_class=OSRZenodoUploader)
     args = parser.parse_args()
-    try:
-        runner = args.runner_class(args)
-        runner.run()
-    except:
+
+    if "runner_class" not in args:
         parser.print_help()
+        sys.exit(0)
+    runner = args.runner_class(args)
+    runner.run()
 
 
 class OSRDataCompiler(object):
 
     def __init__(self, args):
-        pass
+        self._episode_url = args.episode_url
+        self._output_folder = args.output_folder
+        self._meta_data = {}
+        self._audio_file_urls = []
 
     def run(self):
-        pass
+        self._create_dir()
+        self._extract_meta_data_from_html()
+        self._download_audio_files()
+        
+    def _create_dir(self):
+        try:
+            os.mkdir(self._output_folder)
+        except:
+            sys.stderr.write("Warning. Folder '{}' already existed.\n".format(
+                self._output_folder))
+
+    def _extract_meta_data_from_html(self):
+        response = requests.get(self._episode_url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        print(response.text)
+        self._meta_data = {"title": soup.title.string}
+        for meta_tag in soup.find_all('meta'):
+            property = meta_tag.get("property")
+            content = meta_tag.get("content")
+            if property == "og:title":
+                self._meta_data = {
+                    "title": "Open Science Radio - {}".format(content)}
+            elif property == "og:description":
+                self._meta_data = {
+                    "description": content}
+            elif property == "og:audio":
+                self._audio_file_urls.append(content)
+
+    def _download_audio_files(self):
+        for audio_file_url in self._audio_file_urls:
+            sys.stdout.write("Downloading {}\n".format(audio_file_url))
+            wget.download(audio_file_url, out=self._output_folder)
 
 
 class OSRZenodoUploader(object):
