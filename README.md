@@ -1,8 +1,9 @@
 ## OpenScienceRadio-zenodo-uploader
 
 Small tool to upload [Open Science Radio](http://openscienceradio.de)
-episode to [zenodo](https://zenodo.org).
-
+episode to [zenodo](https://zenodo.org). If you want to adapt this for
+you own needs please be aware that some meta information is hard
+coded.
 
 Example:
 
@@ -11,3 +12,9 @@ Example:
 
 ./osr-zenodo-uploader.py upload -i OSR028
 ´´´
+
+Token creation at zenodo:
+- https://zenodo.org/account/settings/applications/tokens/new/
+
+Helpful documentation: 
+- http://developers.zenodo.org/#quickstart-upload
