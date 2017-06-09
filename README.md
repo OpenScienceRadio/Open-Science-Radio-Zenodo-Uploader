@@ -1,7 +1,7 @@
-## OpenScienceRadio-zenodo-uploader
+## OpenScienceRadio-Zenodo-Uploader
 
 Small tool to upload [Open Science Radio](http://openscienceradio.de)
-episode to [zenodo](https://zenodo.org). If you want to adapt this for
+episode to [Zenodo](https://zenodo.org). If you want to adapt this for
 you own needs please be aware that some meta information is hard
 coded.
 
