@@ -26,6 +26,7 @@ __email__ = "konrad@foerstner.org"
 __version__ = ""
 
 import argparse
+import json
 import os
 import sys
 import requests
@@ -42,6 +43,9 @@ def main():
     compile_data_parser.add_argument("--episode_url", "-u", required=True)
     compile_data_parser.add_argument(
         "--output_folder", "-o", required=True)
+    compile_data_parser.add_argument(
+        "--shownote_repo", "-s",
+        default="matthiasfromm/Open-Science-Radio")
     compile_data_parser.set_defaults(runner_class=OSRDataCompiler)
     
     upload_parser = subparsers.add_parser("upload", help="Upload data")
@@ -61,6 +65,7 @@ class OSRDataCompiler(object):
     def __init__(self, args):
         self._episode_url = args.episode_url
         self._output_folder = args.output_folder
+        self._shownote_repo = args.shownote_repo
         self._meta_data = {}
         self._audio_file_urls = []
 
@@ -68,6 +73,7 @@ class OSRDataCompiler(object):
         self._create_dir()
         self._extract_meta_data_from_html()
         self._download_audio_files()
+        self._get_shownotes()
         
     def _create_dir(self):
         try:
@@ -79,17 +85,17 @@ class OSRDataCompiler(object):
     def _extract_meta_data_from_html(self):
         response = requests.get(self._episode_url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        print(response.text)
         self._meta_data = {"title": soup.title.string}
-        for meta_tag in soup.find_all('meta'):
+        for meta_tag in soup.find_all("meta"):
             property = meta_tag.get("property")
             content = meta_tag.get("content")
             if property == "og:title":
-                self._meta_data = {
-                    "title": "Open Science Radio - {}".format(content)}
+                self._meta_data[
+                    "title"] = "Open Science Radio - {}".format(content)
+                self._meta_data[
+                    "episode_id"] = content.split()[0]
             elif property == "og:description":
-                self._meta_data = {
-                    "description": content}
+                self._meta_data["description"] = content
             elif property == "og:audio":
                 self._audio_file_urls.append(content)
 
@@ -97,6 +103,22 @@ class OSRDataCompiler(object):
         for audio_file_url in self._audio_file_urls:
             sys.stdout.write("Downloading {}\n".format(audio_file_url))
             wget.download(audio_file_url, out=self._output_folder)
+
+    def _get_shownotes(self):
+        """Downloads the shownotes file
+
+        Assumption - there is only ONE single file in the folder!
+        """
+        folder_url = "https://api.github.com/repos/{}/contents/{}".format(
+            self._shownote_repo, self._meta_data["episode_id"])
+        response_folder = requests.get(folder_url)
+        folder_info = json.loads(response_folder.text)
+        if len(folder_info) > 1:
+            sys.stderr.write(
+                "Warning. More than one file listed in {}\n".format(
+                    folder_url))
+        raw_file_url = folder_info[0]["download_url"]
+        wget.download(raw_file_url, out=self._output_folder)
 
 
 class OSRZenodoUploader(object):
