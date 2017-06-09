@@ -47,7 +47,7 @@ def main():
         "--shownote_repo", "-s",
         default="matthiasfromm/Open-Science-Radio")
     compile_data_parser.add_argument("--skip_file_download", "-d",
-                                     default="False", action="store_true")
+                                     default=False, action="store_true")
     compile_data_parser.set_defaults(runner_class=OSRDataCompiler)
     
     upload_parser = subparsers.add_parser("upload", help="Upload data")
