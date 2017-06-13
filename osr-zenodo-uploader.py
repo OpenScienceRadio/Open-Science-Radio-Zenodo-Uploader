@@ -70,7 +70,8 @@ class OSRDataCompiler(object):
         self._shownote_repo = args.shownote_repo
         self._skip_file_download = args.skip_file_download
         self._meta_data = {
-            "creators": [{"name": "Fromm, Matthias"},
+            "creators": [{"name": "Fromm, Matthias",
+                          "orcid": "0000-0002-7129-0768"},
                          {"name": "Förstner, Konrad U.",
                           "orcid": "0000-0002-1481-2996",
                           "gnd": "13731518X"}],
