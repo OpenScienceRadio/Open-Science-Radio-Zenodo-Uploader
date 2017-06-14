@@ -24,7 +24,8 @@ OSR028
 └── OSR028-unseminars-mit-aidan-budd.opus
 ```
 
-You can edit the meta data file manually if needed.
+You can edit the meta data file manually if needed or upload the
+episode without any changes to Zenodo.
 
 WORK IN PROGRESS: Step 2 - Zenodo submission:
 
