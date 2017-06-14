@@ -26,7 +26,7 @@ OSR028
 
 You can edit the meta data file manually if needed.
 
-Step 2 - Zenodo submission:
+WORK IN PROGRESS: Step 2 - Zenodo submission:
 
 ```
 $ ./osr-zenodo-uploader.py upload -i OSR028
