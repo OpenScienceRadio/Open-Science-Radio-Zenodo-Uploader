@@ -76,8 +76,7 @@ class OSRDataCompiler(object):
                           "gnd": "13731518X"}],
             "upload_type": "video",
             "access_right": "open",
-            "license": "cc-by"
-        }
+            "license": "cc-by"}
         self._audio_file_urls = []
 
     def run(self):
